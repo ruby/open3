@@ -7,7 +7,7 @@ jobs:
     name: build (${{ matrix.ruby }} / ${{ matrix.os }})
     strategy:
       matrix:
-        ruby: [ 2.7, 2.6, head ]
+        ruby: [ '3.0', 2.7, 2.6, head ]
         os: [ ubuntu-latest, macos-latest ]
     runs-on: ${{ matrix.os }}
     steps:
@@ -16,7 +16,6 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-    - name: Install dependencies
-      run: bundle install
+        bundler-cache: true # 'bundle install' and cache
     - name: Run test
-      run: rake test
+      run: bundle exec rake test
