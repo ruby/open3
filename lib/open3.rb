@@ -519,7 +519,7 @@ module Open3
   #     Open3.capture3('tee', stdin_data: 'Foo')
   #     # => ["Foo", "", #<Process::Status: pid 2319575 exit 0>]
   #
-  # - If entry <tt>options[:binmode]</tt> exists, the entry us removed
+  # - If entry <tt>options[:binmode]</tt> exists, the entry is removed
   #   the internal streams are set to binary mode.
   #
   # The single required argument is one of the following:
@@ -640,7 +640,6 @@ module Open3
   #     Open3.capture2('tee', stdin_data: 'Foo')
   #     # => ["Foo", #<Process::Status: pid 2326087 exit 0>]
   #
-  # - If entry <tt>options[:binmode]</tt> exists, the entry us removed
   #   the internal streams are set to binary mode.
   #
   # The single required argument is one of the following:
