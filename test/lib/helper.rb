@@ -1,2 +1,2 @@
 require "test/unit"
-require_relative 'envutil'
+require 'envutil'
