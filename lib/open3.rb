@@ -1061,57 +1061,37 @@ module Open3
   end
   module_function :pipeline_start
 
-  # Open3.pipeline starts a list of commands as a pipeline.
-  # It waits for the completion of the commands.
-  # No pipes are created for stdin of the first command and
-  # stdout of the last command.
+  # :call-seq:
+  #   Open3.pipeline([env, ] *cmds, options = {}) -> [stdin, stdout, wait_thread] -> statuses
   #
-  #   status_list = Open3.pipeline(cmd1, cmd2, ... [, opts])
+  # Basically a wrapper for Process.spawn that:
   #
-  # Each cmd is a string or an array.
-  # If it is an array, the elements are passed to Process.spawn.
+  # - Creates a child process for each of the given +cmds+
+  #   by calling Process.spawn.
+  # - Pipes the +stdout+ from each child to the +stdin+ of the next.
+  # - Waits for all child processes to exit.
+  # - Returns an array of Process::Status objects (one for each child).
   #
-  #   cmd:
-  #     commandline                              command line string which is passed to a shell
-  #     [env, commandline, opts]                 command line string which is passed to a shell
-  #     [env, cmdname, arg1, ..., opts]          command name and one or more arguments (no shell)
-  #     [env, [cmdname, argv0], arg1, ..., opts] command name and arguments including argv[0] (no shell)
+  # If the first argument is a hash, it becomes leading argument +env+
+  # in each call to Process.spawn.
+  # If the last argument is a hash, it becomes trailing argument +options+
+  # in each call to Process.spawn.
   #
-  #   Note that env and opts are optional, as Process.spawn.
+  # In this discussion:
   #
-  # Example:
+  # - A +command_line+ is a string that begins with a shell reserved word
+  #   or special built-in,
+  #   or contains one or more metacharacters.
+  # - An +exe_path+ is the string path to an executable to be called.
   #
-  #   fname = "/usr/share/man/man1/ruby.1.gz"
-  #   p Open3.pipeline(["zcat", fname], "nroff -man", "less")
-  #   #=> [#<Process::Status: pid 11817 exit 0>,
-  #   #    #<Process::Status: pid 11820 exit 0>,
-  #   #    #<Process::Status: pid 11828 exit 0>]
+  # Each argument in +cmds+ may be:
   #
-  #   fname = "/usr/share/man/man1/ls.1.gz"
-  #   Open3.pipeline(["zcat", fname], "nroff -man", "colcrt")
-  #
-  #   # convert PDF to PS and send to a printer by lpr
-  #   pdf_file = "paper.pdf"
-  #   printer = "printer-name"
-  #   Open3.pipeline(["pdftops", pdf_file, "-"],
-  #                  ["lpr", "-P#{printer}"])
-  #
-  #   # count lines
-  #   Open3.pipeline("sort", "uniq -c", :in=>"names.txt", :out=>"count")
-  #
-  #   # cyclic pipeline
-  #   r,w = IO.pipe
-  #   w.print "ibase=14\n10\n"
-  #   Open3.pipeline("bc", "tee /dev/tty", :in=>r, :out=>w)
-  #   #=> 14
-  #   #   18
-  #   #   22
-  #   #   30
-  #   #   42
-  #   #   58
-  #   #   78
-  #   #   106
-  #   #   202
+  # - A string +command_line+.
+  # - An array containing a string +command_line+ and zero or more string arguments
+  #   for the command.
+  # - A string +exe_path+.
+  # - A 2-element array containing a string +exe_path+
+  #   and a string to be used as the name of the executing process.
   #
   def pipeline(*cmds)
     if Hash === cmds.last
