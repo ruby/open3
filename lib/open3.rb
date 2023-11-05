@@ -1086,12 +1086,9 @@ module Open3
   #
   # Each argument in +cmds+ may be:
   #
-  # - A string +command_line+.
-  # - An array containing a string +command_line+ and zero or more string arguments
+  # - A string +command_line+ or +exe_path+.
+  # - An array containing a string +command_line+  or +exe_path+, and zero or more string arguments
   #   for the command.
-  # - A string +exe_path+.
-  # - A 2-element array containing a string +exe_path+
-  #   and a string to be used as the name of the executing process.
   #
   def pipeline(*cmds)
     if Hash === cmds.last
