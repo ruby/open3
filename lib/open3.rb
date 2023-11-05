@@ -1064,7 +1064,9 @@ module Open3
   # :call-seq:
   #   Open3.pipeline([env, ] *cmds, options = {}) -> array_of_statuses
   #
-  # Basically a wrapper for Process.spawn that:
+  # Basically a wrapper for
+  # {Process.spawn}[https://docs.ruby-lang.org/en/master/Process.html#method-c-spawn]
+  # that:
   #
   # - Creates a child process for each of the given +cmds+
   #   by calling Process.spawn.
@@ -1073,9 +1075,12 @@ module Open3
   # - Returns an array of Process::Status objects (one for each child).
   #
   # If the first argument is a hash, it becomes leading argument +env+
-  # in each call to Process.spawn.
+  # in each call to Process.spawn;
+  # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
+  #
   # If the last argument is a hash, it becomes trailing argument +options+
-  # in each call to Process.spawn.
+  # in each call to Process.spawn'
+  # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
   #
   # In this discussion:
   #
