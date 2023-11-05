@@ -1062,7 +1062,7 @@ module Open3
   module_function :pipeline_start
 
   # :call-seq:
-  #   Open3.pipeline([env, ] *cmds, options = {}) -> [stdin, stdout, wait_thread] -> statuses
+  #   Open3.pipeline([env, ] *cmds, options = {}) -> [stdin, stdout, wait_thread]
   #
   # Basically a wrapper for Process.spawn that:
   #
