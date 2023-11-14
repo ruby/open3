@@ -1005,7 +1005,7 @@ module Open3
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
   #
   # If the last argument is a hash, it becomes trailing argument +options+
-  # in each call to Process.spawn'
+  # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
   #
   # Each remaining argument in +cmds+ is one of:
