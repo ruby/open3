@@ -960,7 +960,7 @@ module Open3
   module_function :pipeline_rw
 
   # :call-seq:
-  #   Open3.pipeline_r([env, ] *cmds, options = {}) ->[last_stdout, wait_threads]
+  #   Open3.pipeline_r([env, ] *cmds, options = {}) -> [last_stdout, wait_threads]
   #
   # Basically a wrapper for
   # {Process.spawn}[https://docs.ruby-lang.org/en/master/Process.html#method-c-spawn]
