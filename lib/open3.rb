@@ -1009,7 +1009,7 @@ module Open3
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
   #
   # If the last argument is a hash, it becomes trailing argument +options+
-  # in each call to Process.spawn'
+  # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
   #
   # Each remaining argument in +cmds+ is one of:
@@ -1034,8 +1034,9 @@ module Open3
   end
   module_function :pipeline_r
 
+
   # :call-seq:
-  #   Open3.pipeline_w([env, ] *cmds, options = {}) -> array_of_statuses
+  #   Open3.pipeline_w([env, ] *cmds, options = {}) -> [first_stdin, wait_threads]
   #
   # Basically a wrapper for
   # {Process.spawn}[https://docs.ruby-lang.org/en/master/Process.html#method-c-spawn]
@@ -1089,7 +1090,7 @@ module Open3
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
   #
   # If the last argument is a hash, it becomes trailing argument +options+
-  # in each call to Process.spawn'
+  # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
   #
   # Each remaining argument in +cmds+ is one of:
