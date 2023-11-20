@@ -929,12 +929,13 @@ module Open3
   # the +stdout+ stream  of the last child,
   # and an array of the wait processes:
   #
-  #   Open3.pipeline_rw("sort", "cat -n") do |first_stdin, last_stdout, ts|
+  #   Open3.pipeline_rw("sort", "cat -n") do |first_stdin, last_stdout, wait_threads|
   #     first_stdin.puts "foo"
   #     first_stdin.puts "bar"
   #     first_stdin.puts "baz"
   #     first_stdin.close # send EOF to sort.
   #     puts last_stdout.read
+  #     p wait_threads
   #   end
   #
   # Output:
@@ -942,6 +943,7 @@ module Open3
   #   1	bar
   #   2	baz
   #   3	foo
+  #   [#<Process::Waiter:0x000055f57082bc00 dead>, #<Process::Waiter:0x000055f57082b7c8 dead>]
   #
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
@@ -1011,9 +1013,9 @@ module Open3
   # of the last child process,
   # and an array of the wait processes:
   #
-  #   Open3.pipeline_r('ls', 'grep R') do |last_stdout, ts|
+  #   Open3.pipeline_r('ls', 'grep R') do |last_stdout, wait_threads|
   #     puts last_stdout.read
-  #     p ts
+  #     p wait_threads
   #   end
   #
   # Output:
@@ -1093,9 +1095,9 @@ module Open3
   #   Open3.pipeline_r(
   #     ['ruby', '-e', 'print "Foo"'],
   #     ['ruby', '-e', 'print STDIN.read + "Bar"']
-  #   ) do |first_stdin, ts|
+  #   ) do |first_stdin, wait_threads|
   #     puts first_stdin.read
-  #     p ts
+  #     p wait_threads
   #   end
   #
   # Output:
@@ -1164,8 +1166,8 @@ module Open3
   # of the last child process,
   # and an array of the wait processes:
   #
-  #   Open3.pipeline_start("sort", "cat -n") do |ts|
-  #     p ts
+  #   Open3.pipeline_start("sort", "cat -n") do |wait_threads|
+  #     p wait_threads
   #   end
   #
   # Output:
