@@ -911,10 +911,9 @@ module Open3
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the first child, from the caller's +stdin+,
   #   or, for the last child, to the caller's +stdout+.
-  # - Waits for all child processes to exit.
+  # - Does not wait for child processes to exit.
   #
   # With no block given, returns a 3-element array containing:
-  #
   #
   # - The +stdin+ stream of the first child process.
   # - The +stdout+ stream of the last child process.
@@ -997,7 +996,7 @@ module Open3
   #   by calling Process.spawn.
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the last child, to the caller's +stdout+.
-  # - Waits for all child processes to exit.
+  # - Does not wait for child processes to exit.
   #
   # With no block given, returns a 2-element array containing:
   #
@@ -1073,7 +1072,7 @@ module Open3
   #   by calling Process.spawn.
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the first child, pipes the caller's +stdout+ to the child's +stdin+.
-  # - Waits for all child processes to exit.
+  # - Does not wait for child processes to exit.
   #
   # With no block given, returns a 2-element array containing:
   #
@@ -1152,7 +1151,7 @@ module Open3
   #
   # - Creates a child process for each of the given +cmds+
   #   by calling Process.spawn.
-  # - Waits for all child processes to exit.
+  # - Does not wait for child processes to exit.
   #
   # With no block given, returns an array of the wait threads0
   # for all of the child processes.
@@ -1224,7 +1223,7 @@ module Open3
   #   by calling Process.spawn.
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the last child, to the caller's +stdout+.
-  # - Waits for all child processes to exit.
+  # - Does not wait for child processes to exit.
   # - Returns an array of Process::Status objects (one for each child).
   #
   # A simple example:
