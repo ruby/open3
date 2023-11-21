@@ -923,8 +923,10 @@ module Open3
   #
   # Example:
   #
-  #   first_stdin, last_stdout, wait_threads = Open3.pipeline_rw('ls', 'grep R')
-  #   # => [#<IO:fd 18>, #<IO:fd 19>, [#<Process::Waiter:0x000055e8de2891b0 sleep>, #<Process::Waiter:0x000055e8de288e40 run>]]
+  #   first_stdin, last_stdout, wait_threads = Open3.pipeline_rw('sort', 'cat -n')
+  #   # => [#<IO:fd 20>, #<IO:fd 21>, [#<Process::Waiter:0x000055e8de29ab40 sleep>, #<Process::Waiter:0x000055e8de29a690 sleep>]]
+  #   first_stdin.puts("foo\nbar\nbaz")
+  #   first_stdin.close # Send EOF to sort.
   #   puts last_stdout.read
   #   wait_threads.each do |wait_thread|
   #     wait_thread.join
@@ -932,8 +934,9 @@ module Open3
   #
   # Output:
   #
-  #   Rakefile
-  #   README.md
+  #   1	bar
+  #   2	baz
+  #   3	foo
   #
   # With a block given, calls the block with the +stdin+ stream of the first child,
   # the +stdout+ stream  of the last child,
