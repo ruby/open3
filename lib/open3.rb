@@ -1091,7 +1091,9 @@ module Open3
   #   by calling Process.spawn.
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the first child, pipes the caller's +stdout+ to the child's +stdin+.
-  # - Does not wait for child processes to exit.
+  #
+  # The method does not wait for child processes to exit,
+  # so the caller must do so.
   #
   # With no block given, returns a 2-element array containing:
   #
@@ -1100,28 +1102,37 @@ module Open3
   #
   # Example:
   #
-  #   p Open3.pipeline_r(
-  #     ['ruby', '-e', 'print "Foo"'],
-  #     ['ruby', '-e', 'print STDIN.read + "Bar"']
-  #   )
-  #   [#<IO:fd 5>, [#<Process::Waiter:0x00005568cad44a08 sleep>, #<Process::Waiter:0x00005568cad44508 run>]]
+  #   first_stdin, wait_threads = Open3.pipeline_w('sort', 'cat -n')
+  #   # => [#<IO:fd 7>, [#<Process::Waiter:0x000055e8de928278 run>, #<Process::Waiter:0x000055e8de923e80 run>]]
+  #   first_stdin.puts("foo\nbar\nbaz")
+  #   first_stdin.close # Send EOF to sort.
+  #   wait_threads.each do |wait_thread|
+  #     wait_thread.join
+  #   end
+  #
+  # Output:
+  #
+  #   1	bar
+  #   2	baz
+  #   3	foo
   #
   # With a block given, calls the block with the +stdin+ stream
   # of the first child process,
   # and an array of the wait processes:
   #
-  #   Open3.pipeline_r(
-  #     ['ruby', '-e', 'print "Foo"'],
-  #     ['ruby', '-e', 'print STDIN.read + "Bar"']
-  #   ) do |first_stdin, wait_threads|
-  #     puts first_stdin.read
-  #     p wait_threads
+  #   Open3.pipeline_w('sort', 'cat -n') do |first_stdin, wait_threads|
+  #     first_stdin.puts("foo\nbar\nbaz")
+  #     first_stdin.close # Send EOF to sort.
+  #     wait_threads.each do |wait_thread|
+  #       wait_thread.join
+  #     end
   #   end
   #
   # Output:
   #
-  #   FooBar
-  #   [#<Process::Waiter:0x000055628e2ebbc0 dead>, #<Process::Waiter:0x000055628e2eb7b0 sleep>]
+  #   1	bar
+  #   2	baz
+  #   3	foo
   #
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
