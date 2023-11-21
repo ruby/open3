@@ -948,9 +948,6 @@ module Open3
   # if called with untrusted input;
   # see {Command Injection}[rdoc-ref:command_injection.rdoc].
   #
-  # Unlike Process.spawn, this method waits for the child processes to exit
-  # before returning, so the caller need not do so.
-  #
   # If the first argument is a hash, it becomes leading argument +env+
   # in each call to Process.spawn;
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
@@ -1026,9 +1023,6 @@ module Open3
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
   # see {Command Injection}[rdoc-ref:command_injection.rdoc].
-  #
-  # Unlike Process.spawn, this method waits for the child processes to exit
-  # before returning, so the caller need not do so.
   #
   # If the first argument is a hash, it becomes leading argument +env+
   # in each call to Process.spawn;
@@ -1108,9 +1102,6 @@ module Open3
   # if called with untrusted input;
   # see {Command Injection}[rdoc-ref:command_injection.rdoc].
   #
-  # Unlike Process.spawn, this method waits for the child processes to exit
-  # before returning, so the caller need not do so.
-  #
   # If the first argument is a hash, it becomes leading argument +env+
   # in each call to Process.spawn;
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
@@ -1177,9 +1168,6 @@ module Open3
   # if called with untrusted input;
   # see {Command Injection}[rdoc-ref:command_injection.rdoc].
   #
-  # Unlike Process.spawn, this method waits for the child processes to exit
-  # before returning, so the caller need not do so.
-  #
   # If the first argument is a hash, it becomes leading argument +env+
   # in each call to Process.spawn;
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
@@ -1241,9 +1229,6 @@ module Open3
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
   # see {Command Injection}[rdoc-ref:command_injection.rdoc].
-  #
-  # Unlike Process.spawn, this method waits for the child process to exit
-  # before returning, so the caller need not do so.
   #
   # If the first argument is a hash, it becomes leading argument +env+
   # in each call to Process.spawn;
