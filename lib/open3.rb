@@ -911,7 +911,9 @@ module Open3
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the first child, from the caller's +stdin+,
   #   or, for the last child, to the caller's +stdout+.
-  # - Does not wait for child processes to exit.
+  #
+  # The method does not wait for child processes to exit,
+  # so the caller must do so.
   #
   # With no block given, returns a 3-element array containing:
   #
@@ -921,20 +923,29 @@ module Open3
   #
   # Example:
   #
-  #   Open3.pipeline_rw("sort", "cat -n")
-  #   # => [#<IO:fd 8>, #<IO:fd 9>, [#<Process::Waiter:0x000055f1d78dd7d0 sleep>, #<Process::Waiter:0x000055f1d78dd438 run>]]
+  #   first_stdin, last_stdout, wait_threads = Open3.pipeline_rw('ls', 'grep R')
+  #   # => [#<IO:fd 18>, #<IO:fd 19>, [#<Process::Waiter:0x000055e8de2891b0 sleep>, #<Process::Waiter:0x000055e8de288e40 run>]]
+  #   puts last_stdout.read
+  #   wait_threads.each do |wait_thread|
+  #     wait_thread.join
+  #   end
+  #
+  # Output:
+  #
+  #   Rakefile
+  #   README.md
   #
   # With a block given, calls the block with the +stdin+ stream of the first child,
   # the +stdout+ stream  of the last child,
   # and an array of the wait processes:
   #
-  #   Open3.pipeline_rw("sort", "cat -n") do |first_stdin, last_stdout, wait_threads|
-  #     first_stdin.puts "foo"
-  #     first_stdin.puts "bar"
-  #     first_stdin.puts "baz"
+  #   Open3.pipeline_rw('sort', 'cat -n') do |first_stdin, last_stdout, wait_threads|
+  #     first_stdin.puts "foo\nbar\nbaz"
   #     first_stdin.close # send EOF to sort.
   #     puts last_stdout.read
-  #     p wait_threads
+  #     wait_threads.each do |wait_thread|
+  #       wait_thread.join
+  #     end
   #   end
   #
   # Output:
@@ -942,7 +953,6 @@ module Open3
   #   1	bar
   #   2	baz
   #   3	foo
-  #   [#<Process::Waiter:0x000055f57082bc00 dead>, #<Process::Waiter:0x000055f57082b7c8 dead>]
   #
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
@@ -1149,14 +1159,18 @@ module Open3
   #
   # Example:
   #
-  #   Open3.pipeline_start("sort", "cat -n")
-  # # => [#<Process::Waiter:0x000055f1d7617cd0 run>, #<Process::Waiter:0x000055f1d76177f8 run>]
+  #   wait_threads = Open3.pipeline_start('sort', 'cat -n')
+  #   # => [#<Process::Waiter:0x00005Open3.pipeline_start('sort', 'cat -n')5f1d7617cd0 run>, #<Process::Waiter:0x000055f1d76177f8 run>]
+  #
+  #   wait_threads.each do |wait_thread|
+  #     wait_thread.wait
+  #   end
   #
   # With a block given, calls the block with the +stdout+ stream
   # of the last child process,
   # and an array of the wait processes:
   #
-  #   Open3.pipeline_start("sort", "cat -n") do |wait_threads|
+  #   Open3.pipeline_start('sort', 'cat -n') do |wait_threads|
   #     p wait_threads
   #   end
   #
