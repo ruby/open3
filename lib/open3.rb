@@ -1185,24 +1185,29 @@ module Open3
   #
   # Example:
   #
-  #   wait_threads = Open3.pipeline_start('sort', 'cat -n')
-  #   # => [#<Process::Waiter:0x00005Open3.pipeline_start('sort', 'cat -n')5f1d7617cd0 run>, #<Process::Waiter:0x000055f1d76177f8 run>]
-  #
+  #   wait_threads = Open3.pipeline_start('ls', 'grep R')
+  #   # => [#<Process::Waiter:0x000055e8de9d2bb0 run>, #<Process::Waiter:0x000055e8de9d2890 run>]
   #   wait_threads.each do |wait_thread|
-  #     wait_thread.wait
-  #   end
-  #
-  # With a block given, calls the block with the +stdout+ stream
-  # of the last child process,
-  # and an array of the wait processes:
-  #
-  #   Open3.pipeline_start('sort', 'cat -n') do |wait_threads|
-  #     p wait_threads
+  #     wait_thread.join
   #   end
   #
   # Output:
   #
-  #   # => [#<Process::Waiter:0x000055f1d7617cd0 run>, #<Process::Waiter:0x000055f1d76177f8 run>]
+  #   Rakefile
+  #   README.md
+  #
+  # With a block given, calls the block with an array of the wait processes:
+  #
+  #   Open3.pipeline_start('ls', 'grep R') do |wait_threads|
+  #     wait_threads.each do |wait_thread|
+  #       wait_thread.join
+  #     end
+  #   end
+  #
+  # Output:
+  #
+  #   Rakefile
+  #   README.md
   #
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
@@ -1251,18 +1256,16 @@ module Open3
   #   by calling Process.spawn.
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the last child, to the caller's +stdout+.
-  # - Does not wait for child processes to exit.
+  # - Waits for the child processes to exit.
   # - Returns an array of Process::Status objects (one for each child).
   #
-  # A simple example:
+  # Example:
   #
-  #   Open3.pipeline('ls', 'grep [A-Z]')
-  #   # => [#<Process::Status: pid 1343895 exit 0>, #<Process::Status: pid 1343897 exit 0>]
+  #   wait_threads = Open3.pipeline('ls', 'grep R')
+  #   # => [#<Process::Status: pid 2139200 exit 0>, #<Process::Status: pid 2139202 exit 0>]
   #
   # Output:
   #
-  #   Gemfile
-  #   LICENSE.txt
   #   Rakefile
   #   README.md
   #
