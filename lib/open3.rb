@@ -1006,7 +1006,9 @@ module Open3
   #   by calling Process.spawn.
   # - Pipes the +stdout+ from each child to the +stdin+ of the next child,
   #   or, for the last child, to the caller's +stdout+.
-  # - Does not wait for child processes to exit.
+  #
+  # The method does not wait for child processes to exit,
+  # so the caller must do so.
   #
   # With no block given, returns a 2-element array containing:
   #
@@ -1015,8 +1017,17 @@ module Open3
   #
   # Example:
   #
-  #   Open3.pipeline_r('ls', 'grep R')
-  #   # => [#<IO:fd 5>, [#<Process::Waiter:0x00005638280167b8 sleep>, #<Process::Waiter:0x0000563828015480 dead>]]
+  #   last_stdout, wait_threads = Open3.pipeline_r('ls', 'grep R')
+  #   # => [#<IO:fd 5>, [#<Process::Waiter:0x000055e8de2f9898 dead>, #<Process::Waiter:0x000055e8de2f94b0 sleep>]]
+  #   puts last_stdout.read
+  #   wait_threads.each do |wait_thread|
+  #     wait_thread.join
+  #   end
+  #
+  # Output:
+  #
+  #   Rakefile
+  #   README.md
   #
   # With a block given, calls the block with the +stdout+ stream
   # of the last child process,
@@ -1024,14 +1035,15 @@ module Open3
   #
   #   Open3.pipeline_r('ls', 'grep R') do |last_stdout, wait_threads|
   #     puts last_stdout.read
-  #     p wait_threads
+  #     wait_threads.each do |wait_thread|
+  #       wait_thread.join
+  #     end
   #   end
   #
   # Output:
   #
   #   Rakefile
   #   README.md
-  #   [#<Process::Waiter:0x000055f1d78d76f0 sleep>, #<Process::Waiter:0x000055f1d78d7358 dead>]
   #
   # Like Process.spawn, this method has potential security vulnerabilities
   # if called with untrusted input;
