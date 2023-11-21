@@ -1180,7 +1180,7 @@ module Open3
   #   by calling Process.spawn.
   # - Does not wait for child processes to exit.
   #
-  # With no block given, returns an array of the wait threads0
+  # With no block given, returns an array of the wait threads
   # for all of the child processes.
   #
   # Example:
