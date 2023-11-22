@@ -72,11 +72,11 @@ require 'open3/version'
 # Each of the methods above accepts:
 #
 # - An optional hash of environment variable names and values;
-#   see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#Execution+Environment].
+#   see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
 # - A required string argument that is a +command_line+ or +exe_path+;
-#   see {Argument command_line or exe_path}[https://docs.ruby-lang.org/en/master/Process.html#Argument+command_line+or+exe_path].
+#   see {Argument command_line or exe_path}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Argument+command_line+or+exe_path].
 # - An optional hash of execution options;
-#   see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#Execution+Options].
+#   see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
 #
 module Open3
 
