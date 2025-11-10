@@ -20,15 +20,15 @@ module Open3
   end
   module_function :popen3
 
-  IO_3 = proc do |process|
+  IO_3 = proc do |process| # :nodoc:
     [process.getOutputStream.to_io, process.getInputStream.to_io, process.getErrorStream.to_io]
   end
 
-  BUILD_2 = proc do |builder|
+  BUILD_2 = proc do |builder| # :nodoc:
     builder.redirectError(ProcessBuilder::Redirect::INHERIT)
   end
 
-  IO_2 = proc do |process|
+  IO_2 = proc do |process| # :nodoc:
     [process.getOutputStream.to_io, process.getInputStream.to_io]
   end
 
@@ -42,7 +42,7 @@ module Open3
   end
   module_function :popen2
 
-  BUILD_2E = proc do |builder|
+  BUILD_2E = proc do |builder| # :nodoc:
     builder.redirectErrorStream(true)
   end
 
@@ -56,7 +56,7 @@ module Open3
   end
   module_function :popen2e
 
-  def processbuilder_run(cmd, opts, build: nil, io:)
+  def processbuilder_run(cmd, opts, build: nil, io:) # :nodoc:
     opts.each do |k, v|
       if Integer === k
         if IO == v || !(String === v || v.respond_to?(:to_path))
@@ -113,7 +113,7 @@ module Open3
     private :processbuilder_run
   end
 
-  class DetachThread < Thread
+  class DetachThread < Thread # :nodoc:
     attr_reader :pid
 
     def initialize(pid)
