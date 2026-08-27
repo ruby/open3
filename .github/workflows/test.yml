@@ -15,7 +15,15 @@ jobs:
     strategy:
       matrix:
         ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        include:
+          - ruby: mswin
+            os: windows-latest
+        exclude:
+          - ruby: jruby
+            os: windows-latest
+          - ruby: jruby-head
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v7
