@@ -78,6 +78,10 @@ require 'open3/version'
 # - An optional hash of execution options;
 #   see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
 #
+# Note: When using methods that set up pipes for I/O streams,
+# the corresponding redirection options in the execution options
+# will be ignored for those streams.
+#
 module Open3
 
   # :call-seq:
@@ -137,8 +141,10 @@ module Open3
   # if called with untrusted input;
   # see {Command Injection}[https://docs.ruby-lang.org/en/master/command_injection_rdoc.html#label-Command+Injection].
   #
-  # Unlike Process.spawn, this method waits for the child process to exit
-  # before returning, so the caller need not do so.
+  # Blocking behavior:
+  # - With a block: waits for the child process to exit before returning.
+  # - Without a block: returns immediately without waiting for the child process;
+  #   the caller must call +wait_thread.join+ to wait for the process to exit.
   #
   # If the first argument is a hash, it becomes leading argument +env+
   # in the call to Process.spawn;
@@ -147,6 +153,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in the call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # The single required argument is one of the following:
   #
@@ -290,8 +299,10 @@ module Open3
   # if called with untrusted input;
   # see {Command Injection}[https://docs.ruby-lang.org/en/master/command_injection_rdoc.html#label-Command+Injection].
   #
-  # Unlike Process.spawn, this method waits for the child process to exit
-  # before returning, so the caller need not do so.
+  # Blocking behavior:
+  # - With a block: waits for the child process to exit before returning.
+  # - Without a block: returns immediately without waiting for the child process;
+  #   the caller must call +wait_thread.join+ to wait for the process to exit.
   #
   # If the first argument is a hash, it becomes leading argument +env+
   # in the call to Process.spawn;
@@ -300,6 +311,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in the call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # The single required argument is one of the following:
   #
@@ -434,8 +448,10 @@ module Open3
   # if called with untrusted input;
   # see {Command Injection}[https://docs.ruby-lang.org/en/master/command_injection_rdoc.html#label-Command+Injection].
   #
-  # Unlike Process.spawn, this method waits for the child process to exit
-  # before returning, so the caller need not do so.
+  # Blocking behavior:
+  # - With a block: waits for the child process to exit before returning.
+  # - Without a block: returns immediately without waiting for the child process;
+  #   the caller must call +wait_thread.join+ to wait for the process to exit.
   #
   # If the first argument is a hash, it becomes leading argument +env+
   # in the call to Process.spawn;
@@ -444,6 +460,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in the call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # The single required argument is one of the following:
   #
@@ -583,6 +602,9 @@ module Open3
   # in the call to Open3.popen3;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
   #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
+  #
   # The hash +options+ is given;
   # two options have local effect in method Open3.capture3:
   #
@@ -708,6 +730,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in the call to Open3.popen3;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # The hash +options+ is given;
   # two options have local effect in method Open3.capture2:
@@ -836,6 +861,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in the call to Open3.popen3;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # The hash +options+ is given;
   # two options have local effect in method Open3.capture2e:
@@ -972,15 +1000,14 @@ module Open3
   #
   # With a block given, calls the block with the +stdin+ stream of the first child,
   # the +stdout+ stream  of the last child,
-  # and an array of the wait processes:
+  # and an array of the wait processes.
+  # The method automatically waits for all processes to exit after the block returns.
   #
   #   Open3.pipeline_rw('sort', 'cat -n') do |first_stdin, last_stdout, wait_threads|
   #     first_stdin.puts "foo\nbar\nbaz"
   #     first_stdin.close # send EOF to sort.
   #     puts last_stdout.read
-  #     wait_threads.each do |wait_thread|
-  #       wait_thread.join
-  #     end
+  #     # No need to join wait_threads - the method handles it automatically.
   #   end
   #
   # Output:
@@ -1000,6 +1027,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # Each remaining argument in +cmds+ is one of:
   #
@@ -1065,13 +1095,12 @@ module Open3
   #
   # With a block given, calls the block with the +stdout+ stream
   # of the last child process,
-  # and an array of the wait processes:
+  # and an array of the wait processes.
+  # The method automatically waits for all processes to exit after the block returns.
   #
   #   Open3.pipeline_r('ls', 'grep R') do |last_stdout, wait_threads|
   #     puts last_stdout.read
-  #     wait_threads.each do |wait_thread|
-  #       wait_thread.join
-  #     end
+  #     # No need to join wait_threads - the method handles it automatically.
   #   end
   #
   # Output:
@@ -1090,6 +1119,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # Each remaining argument in +cmds+ is one of:
   #
@@ -1154,14 +1186,13 @@ module Open3
   #
   # With a block given, calls the block with the +stdin+ stream
   # of the first child process,
-  # and an array of the wait processes:
+  # and an array of the wait processes.
+  # The method automatically waits for all processes to exit after the block returns.
   #
   #   Open3.pipeline_w('sort', 'cat -n') do |first_stdin, wait_threads|
   #     first_stdin.puts("foo\nbar\nbaz")
   #     first_stdin.close # Send EOF to sort.
-  #     wait_threads.each do |wait_thread|
-  #       wait_thread.join
-  #     end
+  #     # No need to join wait_threads - the method handles it automatically.
   #   end
   #
   # Output:
@@ -1181,6 +1212,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # Each remaining argument in +cmds+ is one of:
   #
@@ -1234,12 +1268,11 @@ module Open3
   #   Rakefile
   #   README.md
   #
-  # With a block given, calls the block with an array of the wait processes:
+  # With a block given, calls the block with an array of the wait processes.
+  # The method automatically waits for all processes to exit after the block returns.
   #
   #   Open3.pipeline_start('ls', 'grep R') do |wait_threads|
-  #     wait_threads.each do |wait_thread|
-  #       wait_thread.join
-  #     end
+  #     # No need to join wait_threads - the method handles it automatically.
   #   end
   #
   # Output:
@@ -1258,6 +1291,9 @@ module Open3
   # If the last argument is a hash, it becomes trailing argument +options+
   # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # Each remaining argument in +cmds+ is one of:
   #
@@ -1318,8 +1354,11 @@ module Open3
   # see {Execution Environment}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Environment].
   #
   # If the last argument is a hash, it becomes trailing argument +options+
-  # in each call to Process.spawn'
+  # in each call to Process.spawn;
   # see {Execution Options}[https://docs.ruby-lang.org/en/master/Process.html#module-Process-label-Execution+Options].
+  #
+  # Note: Redirection options are managed by the method and should not be
+  # provided as they may be ignored or lead to errors.
   #
   # Each remaining argument in +cmds+ is one of:
   #
